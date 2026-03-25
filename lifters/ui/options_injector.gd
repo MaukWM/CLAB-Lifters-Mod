@@ -84,5 +84,14 @@ func _inject_lifters_button(menu: Node) -> void:
 	print("Lifters: Button injected!")
 
 func _on_button_lifters_pressed() -> void:
-	print("Lifters: LIFTERS button pressed!")
-	# TODO: transition to lifters settings menu
+	print("Lifters: Opening Lifters settings menu...")
+	var config = get_parent().get_node("LiftersConfig")
+	var menu_script = load("res://lifters/ui/lifters_menu.gd")
+	var menu = Control.new()
+	menu.set_script(menu_script)
+	menu.setup(config)
+	Globals.MENU_NODE.add_child(menu)
+	# Remove the current options menu (same pattern as game's menu transitions)
+	var options_menu = _find_options_menu()
+	if options_menu:
+		options_menu.queue_free()

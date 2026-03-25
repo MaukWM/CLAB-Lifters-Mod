@@ -81,6 +81,7 @@ func _load() -> void:
 
 	if parsed is Dictionary:
 		_data = parsed
+		_coerce_types(_data, DEFAULTS)
 		_migrate()
 	else:
 		print("Lifters Config: Invalid settings file, resetting to defaults.")
@@ -95,6 +96,16 @@ func _migrate() -> void:
 		_merge_defaults(_data, DEFAULTS)
 		_data["version"] = CURRENT_VERSION
 		save()
+
+# JSON loses int vs float distinction — coerce types to match DEFAULTS
+func _coerce_types(target: Dictionary, defaults: Dictionary) -> void:
+	for key in target:
+		if not defaults.has(key):
+			continue
+		if target[key] is Dictionary and defaults[key] is Dictionary:
+			_coerce_types(target[key], defaults[key])
+		elif defaults[key] is int and target[key] is float:
+			target[key] = int(target[key])
 
 func _merge_defaults(target: Dictionary, defaults: Dictionary) -> void:
 	for key in defaults:
