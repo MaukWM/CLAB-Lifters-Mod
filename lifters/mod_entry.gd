@@ -35,7 +35,18 @@ func _ready() -> void:
 	add_child(save_guard)
 	save_guard.setup(config)
 
-	# TODO: LiveSplit TCP client (livesplit_client.gd)
-	# TODO: Split detector (lifters_splitter.gd)
+	# LiveSplit TCP client
+	var livesplit = Node.new()
+	livesplit.name = "LiveSplitClient"
+	livesplit.set_script(load(MOD_DIR + "scripts/livesplit_client.gd"))
+	add_child(livesplit)
+	livesplit.setup(config)
+
+	# Split detector
+	var splitter = Node.new()
+	splitter.name = "Splitter"
+	splitter.set_script(load(MOD_DIR + "scripts/lifters_splitter.gd"))
+	add_child(splitter)
+	splitter.setup(livesplit, config)
 
 	print("Lifters: All systems ready.")

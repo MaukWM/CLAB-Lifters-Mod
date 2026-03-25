@@ -1,21 +1,33 @@
 # Prevents level saves from persisting when disable_save is enabled.
-# Resets PREVIOUS_LEVEL_SAVE_EXISTS on startup and on every return to main menu.
+# Wipes level state on startup and ensures NEW GAME on every return to menu.
 extends Node
 
 var _config: Node
-var _connected: bool = false
 
 func setup(config: Node) -> void:
 	_config = config
 
 func _ready() -> void:
-	GlobalEventBus.game_state_changed.connect(_on_game_state_changed)
-	# On startup: wipe level save so title menu shows NEW GAME
 	if _config.get_setting("disable_save"):
 		SaveFileManager.delete_level_state()
-		print("Lifters: Save disabled — level state wiped.")
+		Globals.MAIN_NODE.reset_game_variables()
+		print("Lifters: Save disabled — full wipe on startup.")
 
-func _on_game_state_changed(new_state) -> void:
-	if new_state == Globals.GAME_STATE.MAIN_MENU and _config.get_setting("disable_save"):
-		SaveFileManager.delete_level_state()
-		print("Lifters: Save disabled — level state wiped on return to menu.")
+func _process(_delta: float) -> void:
+	if not _config.get_setting("disable_save"):
+		return
+
+	# Continuously enforce: while at main menu, save must not exist
+	if Globals.CURRENT_GAME_STATE == Globals.GAME_STATE.MAIN_MENU:
+		if SaveFileManager.PREVIOUS_LEVEL_SAVE_EXISTS:
+			SaveFileManager.delete_level_state()
+			Globals.MAIN_NODE.reset_game_variables()
+			print("Lifters: Save disabled — level state and game variables wiped.")
+
+		# Also fix the title menu button text if it shows CONTINUE
+		if Globals.MENU_NODE:
+			for child in Globals.MENU_NODE.get_children():
+				if child.name == "TitleMenu":
+					var btn = child.get_node_or_null("%ButtonStart")
+					if btn and btn.text != TranslationServer.translate("M_NEW_GAME"):
+						btn.text = TranslationServer.translate("M_NEW_GAME")

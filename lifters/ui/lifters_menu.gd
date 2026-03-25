@@ -4,10 +4,8 @@ extends "res://scenes/UI/menus/base_menu_with_transitions.gd"
 var _config: Node
 var _select_graphic: Node
 var _power_interval_label: Label
-var _power_splits_label: Label
 var _power_interval_slider: HSlider
 var _power_row: HBoxContainer
-var _splits_row: HBoxContainer
 
 func setup(config: Node) -> void:
 	_config = config
@@ -135,9 +133,9 @@ func _ready() -> void:
 	_power_row.add_child(interval_label)
 
 	_power_interval_slider = HSlider.new()
-	_power_interval_slider.min_value = 0.01
-	_power_interval_slider.max_value = 3.99
-	_power_interval_slider.step = 0.01
+	_power_interval_slider.min_value = 0.05
+	_power_interval_slider.max_value = 2.00
+	_power_interval_slider.step = 0.05
 	_power_interval_slider.value = _config.get_setting("autosplit.power_interval")
 	_power_interval_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_power_interval_slider.custom_minimum_size = Vector2(200, 0)
@@ -150,16 +148,6 @@ func _ready() -> void:
 	_power_interval_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_power_interval_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_power_row.add_child(_power_interval_label)
-
-	# Split count info row
-	_splits_row = HBoxContainer.new()
-	_splits_row.layout_mode = 2
-	options.add_child(_splits_row)
-
-	_power_splits_label = Label.new()
-	_power_splits_label.label_settings = label_settings
-	_splits_row.add_child(_power_splits_label)
-	_update_splits_label()
 
 	var emit_boulder = _add_toggle(options, "Split on Boulder Lift", "autosplit.emit_on_boulder_lift", ui_theme, label_settings)
 
@@ -245,14 +233,6 @@ func _add_toggle(parent: VBoxContainer, label_text: String, setting_key: String,
 func _on_power_interval_changed(value: float) -> void:
 	_config.set_setting("autosplit.power_interval", value)
 	_power_interval_label.text = "%.2f" % value
-	_update_splits_label()
-
-func _update_splits_label() -> void:
-	var interval = _config.get_setting("autosplit.power_interval")
-	var count = int(4.0 / interval)
-	if fmod(4.0, interval) > 0.001:
-		count += 1
-	_power_splits_label.text = "  (Produces %d splits)" % count
 
 func _on_setting_changed(key: String, _value: Variant) -> void:
 	if key == "autosplit.emit_on_power":
@@ -262,7 +242,6 @@ func _update_power_row_state() -> void:
 	var enabled = _config.get_setting("autosplit.emit_on_power")
 	_power_row.modulate.a = 1.0 if enabled else 0.4
 	_power_interval_slider.editable = enabled
-	_splits_row.modulate.a = 1.0 if enabled else 0.4
 
 func _on_back_pressed() -> void:
 	if !transition_tween:
