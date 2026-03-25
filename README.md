@@ -7,7 +7,7 @@ Speedrun QoL mod for [Cirno! Lifts a Boulder](https://store.steampowered.com/app
 - **In-game settings menu** — accessible from Options, all settings configurable in-game
 - **Skip intro/ending** — skip the story slideshows for faster run starts
 - **Disable saving** — every run starts fresh, no manual save deletion needed
-- **Autosplit configuration** — LiveSplit split settings (TCP client coming soon)
+- **LiveSplit autosplitter** — splits on power thresholds, frog collection, and boulder lift via TCP
 
 ## Installation
 
@@ -15,6 +15,15 @@ Speedrun QoL mod for [Cirno! Lifts a Boulder](https://store.steampowered.com/app
 2. Extract the zip contents into your game directory (right-click game in Steam → Manage → Browse Local Files)
 3. You should see `override.cfg` and `lifters/` next to `Cirno! Lifts a Boulder.exe`
 4. Launch the game — "LIFTERS MOD" appears in the Options menu
+
+### LiveSplit Setup
+
+The autosplitter connects to [LiveSplit](https://livesplit.org/) via the LiveSplit Server component. Recommended version: **1.8.37**.
+
+1. Open LiveSplit → right-click → **Settings** → under **LiveSplit Server**, set **Startup Behavior** to **Start TCP Server**
+2. Right-click LiveSplit → **Compare Against** → **Game Time**
+
+The mod sends the game's internal timer to LiveSplit every frame, so Game Time will match the in-game clock exactly. Split events are configurable in the Lifters Mod settings menu.
 
 ### Uninstall
 
