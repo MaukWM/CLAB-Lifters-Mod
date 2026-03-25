@@ -10,6 +10,7 @@ var _prev_finish_queued: bool = false
 var _prev_game_state = null
 var _active: bool = false
 var _started: bool = false
+var _paused: bool = false
 
 func setup(livesplit: Node, config: Node) -> void:
 	_livesplit = livesplit
@@ -20,14 +21,24 @@ func _physics_process(_delta: float) -> void:
 	if not _config.get_setting("autosplit.enabled"):
 		return
 
-	# Only track when in game
+	# Pause/unpause game time when game pauses
 	var game_state = Globals.CURRENT_GAME_STATE
+	if game_state == Globals.GAME_STATE.PAUSE_MENU and not _paused and _active:
+		_livesplit.pause_game_time()
+		_paused = true
+		print("Lifters Splitter: Game paused, timer paused.")
+	elif game_state == Globals.GAME_STATE.IN_GAME and _paused:
+		_livesplit.unpause_game_time()
+		_paused = false
+		print("Lifters Splitter: Game unpaused, timer resumed.")
+
+	# Only track when in game
 	if game_state != Globals.GAME_STATE.IN_GAME:
 		_prev_game_state = game_state
 		return
 
-	# Entering IN_GAME: start tracking
-	if _prev_game_state != Globals.GAME_STATE.IN_GAME:
+	# Entering IN_GAME from main menu (not from unpause)
+	if _prev_game_state == Globals.GAME_STATE.MAIN_MENU:
 		_active = true
 		_started = false
 		_prev_power = Globals.MAIN_NODE.game_power
