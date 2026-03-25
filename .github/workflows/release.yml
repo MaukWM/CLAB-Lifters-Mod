@@ -18,9 +18,9 @@ jobs:
         run: |
           VERSION=${GITHUB_REF_NAME#v}
           cp lifters/override.cfg override.cfg
-          zip -r MaukWM-Lifters-$VERSION.zip override.cfg lifters/ -x "lifters/override.cfg"
+          zip -r Lifters-$VERSION.zip override.cfg lifters/ -x "lifters/override.cfg"
 
       - name: Upload release artifact
         uses: softprops/action-gh-release@v2
         with:
-          files: MaukWM-Lifters-*.zip
+          files: Lifters-*.zip
