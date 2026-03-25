@@ -37,7 +37,7 @@ func _process(delta: float) -> void:
 			_reconnect_timer += delta
 			if _reconnect_timer >= RECONNECT_INTERVAL:
 				_reconnect_timer = 0.0
-				start_connection()
+				_tcp.connect_to_host(_host, _port)
 
 		StreamPeerTCP.STATUS_CONNECTING:
 			pass
