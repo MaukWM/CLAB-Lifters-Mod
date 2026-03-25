@@ -9,6 +9,7 @@ var _prev_frog_count: int = 0
 var _prev_finish_queued: bool = false
 var _prev_game_state = null
 var _active: bool = false
+var _started: bool = false
 
 func setup(livesplit: Node, config: Node) -> void:
 	_livesplit = livesplit
@@ -28,11 +29,11 @@ func _physics_process(_delta: float) -> void:
 	# Entering IN_GAME: start tracking
 	if _prev_game_state != Globals.GAME_STATE.IN_GAME:
 		_active = true
+		_started = false
 		_prev_power = Globals.MAIN_NODE.game_power
 		_prev_frog_count = SaveFileManager.LEVEL_SAVE_CONTENT["frogs_collected"].size()
 		_prev_finish_queued = false
-		_livesplit.start_or_split()
-		print("Lifters Splitter: Entered game, split sent.")
+		print("Lifters Splitter: Entered game, waiting for lockout to end.")
 		_prev_game_state = game_state
 		return
 
@@ -46,6 +47,15 @@ func _physics_process(_delta: float) -> void:
 	var current_frog_count: int = SaveFileManager.LEVEL_SAVE_CONTENT["frogs_collected"].size()
 	var current_finish_queued: bool = Globals.MAIN_NODE.finish_game_queued
 	var current_time: float = SaveFileManager.LEVEL_SAVE_CONTENT["time_spent_seconds"]
+
+	# Wait for game timer to start ticking (lockout ended)
+	if not _started and current_time > 0.0:
+		_started = true
+		_livesplit.start_or_split()
+		print("Lifters Splitter: Game timer started, split sent.")
+
+	if not _started:
+		return
 
 	# Send game time every tick
 	_livesplit.set_game_time(current_time)
@@ -76,4 +86,3 @@ func _physics_process(_delta: float) -> void:
 	_prev_power = current_power
 	_prev_frog_count = current_frog_count
 	_prev_finish_queued = current_finish_queued
-
