@@ -138,7 +138,8 @@ func _ready() -> void:
 	_power_interval_slider.step = 0.05
 	_power_interval_slider.value = _config.get_setting("autosplit.power_interval")
 	_power_interval_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_power_interval_slider.custom_minimum_size = Vector2(200, 0)
+	_power_interval_slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_power_interval_slider.custom_minimum_size = Vector2(200, 64)
 	_power_row.add_child(_power_interval_slider)
 
 	_power_interval_label = Label.new()
