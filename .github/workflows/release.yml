@@ -17,8 +17,8 @@ jobs:
       - name: Package mod zip
         run: |
           VERSION=${GITHUB_REF_NAME#v}
-          cd mods-unpacked
-          zip -r ../MaukWM-Lifters-$VERSION.zip MaukWM-Lifters/
+          cp lifters/override.cfg override.cfg
+          zip -r MaukWM-Lifters-$VERSION.zip override.cfg lifters/ -x "lifters/override.cfg"
 
       - name: Upload release artifact
         uses: softprops/action-gh-release@v2

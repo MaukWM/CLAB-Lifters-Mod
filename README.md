@@ -1,6 +1,6 @@
 # Lifters
 
-A [GML](https://github.com/GodotModding/godot-mod-loader) mod introducing QoL stuff for speedrunners for [Cirno! Lifts a Boulder](https://store.steampowered.com/app/4173110/Cirno_Lifts_a_Boulder/).
+Speedrun QoL mod for [Cirno! Lifts a Boulder](https://store.steampowered.com/app/4173110/Cirno_Lifts_a_Boulder/). Uses Godot 4.6's native `override.cfg` + `autoload_prepend`, GML is not needed.
 
 > Work in progress — features coming soon.
 
@@ -9,20 +9,17 @@ A [GML](https://github.com/GodotModding/godot-mod-loader) mod introducing QoL st
 ### Prerequisites
 
 1. **Cirno! Lifts a Boulder** installed via Steam (Windows)
-2. **Godot Mod Loader (GML)** installed for the game
-
-### Install GML (one-time)
-
-1. Download the latest GML release from the [Godot Mod Loader releases](https://github.com/GodotModding/godot-mod-loader/releases)
-2. Extract the GML files into the game directory alongside the game executable
-3. Add the Steam launch option: `--script addons/mod_loader/mod_loader_setup.gd`
-4. Launch the game — the window title should show "(Modded)"
 
 ### Install Lifters
 
 1. Download `MaukWM-Lifters-X.Y.Z.zip` from the [latest release](https://github.com/MaukWM/CLAB-Lifters-Mod/releases/latest)
-2. Extract the zip into the game directory so that `mods-unpacked/MaukWM-Lifters/` exists next to the game executable
-3. Launch the game
+2. Extract the zip contents into your game directory (right-click game in Steam → Manage → Browse Local Files)
+3. You should see `override.cfg` and `lifters/` next to `Cirno Lifts a Boulder.exe`
+4. Launch the game
+
+### Uninstall
+
+Delete `override.cfg` and the `lifters/` folder from the game directory.
 
 ## Settings
 
