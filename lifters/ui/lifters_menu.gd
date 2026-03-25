@@ -22,6 +22,7 @@ func _ready() -> void:
 
 	var ui_theme = load("res://theme_stuff/themes/UITheme.tres")
 	var ui_theme_small = load("res://theme_stuff/themes/UITheme_50h.tres")
+	var label_settings = load("res://theme_stuff/label_settings/ui_label_default.tres")
 	var label_settings_big = load("res://theme_stuff/label_settings/ui_label_super_big.tres")
 	var header_bg_tex = load("res://sprites/ui/header_background.png")
 	var pillar_bg_tex = load("res://sprites/ui/background_pillar.png")
@@ -31,7 +32,7 @@ func _ready() -> void:
 	# Background pillar
 	var pillar = NinePatchRect.new()
 	pillar.texture = pillar_bg_tex
-	pillar.offset_left = 384.0
+	pillar.offset_left = 191.0
 	pillar.offset_top = -1024.0
 	pillar.offset_right = 960.0
 	pillar.offset_bottom = 64.0
@@ -47,9 +48,9 @@ func _ready() -> void:
 	_select_graphic.layout_mode = 1
 	_select_graphic.anchor_top = 0.3
 	_select_graphic.anchor_bottom = 0.3
-	_select_graphic.offset_left = -504.0
+	_select_graphic.offset_left = -760.0
 	_select_graphic.offset_top = -32.68
-	_select_graphic.offset_right = 504.0
+	_select_graphic.offset_right = 760.0
 	_select_graphic.offset_bottom = 33.32
 	add_child(_select_graphic)
 
@@ -106,15 +107,15 @@ func _ready() -> void:
 	scroll.add_child(options)
 
 	# --- Story section ---
-	_add_section_label(options, "STORY", ui_theme)
-	var skip_intro = _add_toggle(options, "Skip Intro Story", "skip_intro_story", ui_theme)
-	var skip_endgame = _add_toggle(options, "Skip Endgame Story", "skip_endgame_story", ui_theme)
+	_add_section_label(options, "STORY", ui_theme, label_settings)
+	var skip_intro = _add_toggle(options, "Skip Intro", "skip_intro_story", ui_theme, label_settings)
+	var skip_endgame = _add_toggle(options, "Skip Ending", "skip_endgame_story", ui_theme, label_settings)
 
 	# --- Autosplit section ---
-	_add_section_label(options, "AUTOSPLIT", ui_theme)
-	var autosplit_enabled = _add_toggle(options, "Enable Autosplitting", "autosplit.enabled", ui_theme)
-	var emit_frog = _add_toggle(options, "Split on Frog", "autosplit.emit_on_frog", ui_theme)
-	var emit_power = _add_toggle(options, "Split on Power", "autosplit.emit_on_power", ui_theme)
+	_add_section_label(options, "AUTOSPLIT", ui_theme, label_settings)
+	var autosplit_enabled = _add_toggle(options, "Enable Autosplitting", "autosplit.enabled", ui_theme, label_settings)
+	var emit_frog = _add_toggle(options, "Split on Frog", "autosplit.emit_on_frog", ui_theme, label_settings)
+	var emit_power = _add_toggle(options, "Split on Power", "autosplit.emit_on_power", ui_theme, label_settings)
 
 	# Power interval slider row
 	_power_row = HBoxContainer.new()
@@ -124,9 +125,9 @@ func _ready() -> void:
 
 	var interval_label = Label.new()
 	interval_label.text = "  Power Interval"
-	interval_label.theme = ui_theme
-	interval_label.add_theme_font_size_override("font_size", 40)
-	interval_label.custom_minimum_size = Vector2(350, 0)
+	interval_label.label_settings = label_settings
+	interval_label.custom_minimum_size = Vector2(350, 64)
+	interval_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_power_row.add_child(interval_label)
 
 	_power_interval_slider = HSlider.new()
@@ -140,9 +141,10 @@ func _ready() -> void:
 
 	_power_interval_label = Label.new()
 	_power_interval_label.text = "%.2f" % _power_interval_slider.value
-	_power_interval_label.theme = ui_theme
-	_power_interval_label.add_theme_font_size_override("font_size", 40)
-	_power_interval_label.custom_minimum_size = Vector2(80, 0)
+	_power_interval_label.label_settings = label_settings
+	_power_interval_label.custom_minimum_size = Vector2(128, 0)
+	_power_interval_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_power_interval_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_power_row.add_child(_power_interval_label)
 
 	# Split count info row
@@ -151,13 +153,11 @@ func _ready() -> void:
 	options.add_child(_splits_row)
 
 	_power_splits_label = Label.new()
-	_power_splits_label.theme = ui_theme
-	_power_splits_label.add_theme_font_size_override("font_size", 32)
-	_power_splits_label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	_power_splits_label.label_settings = label_settings
 	_splits_row.add_child(_power_splits_label)
 	_update_splits_label()
 
-	var emit_boulder = _add_toggle(options, "Split on Boulder Lift", "autosplit.emit_on_boulder_lift", ui_theme)
+	var emit_boulder = _add_toggle(options, "Split on Boulder Lift", "autosplit.emit_on_boulder_lift", ui_theme, label_settings)
 
 	# Update power row visibility
 	_update_power_row_state()
@@ -166,17 +166,17 @@ func _ready() -> void:
 	var back_btn = Button.new()
 	back_btn.name = "ButtonBack"
 	back_btn.text = "BACK"
-	back_btn.theme = ui_theme_small
-	back_btn.custom_minimum_size = Vector2(0, 50)
+	back_btn.theme = ui_theme
+	back_btn.custom_minimum_size = Vector2(0, 66)
 	back_btn.layout_mode = 1
 	back_btn.anchor_left = 0.5
 	back_btn.anchor_right = 0.5
-	back_btn.anchor_top = 0.907
-	back_btn.anchor_bottom = 0.907
-	back_btn.offset_left = -111.5
-	back_btn.offset_right = 111.5
-	back_btn.offset_top = -25.0
-	back_btn.offset_bottom = 25.0
+	back_btn.anchor_top = 0.888
+	back_btn.anchor_bottom = 0.889
+	back_btn.offset_left = -91.5
+	back_btn.offset_right = 91.5
+	back_btn.offset_top = -32.0
+	back_btn.offset_bottom = 32.88
 	back_btn.grow_horizontal = 2
 	back_btn.grow_vertical = 2
 	add_child(back_btn)
@@ -199,7 +199,7 @@ func _ready() -> void:
 
 	super._ready()
 
-func _add_section_label(parent: VBoxContainer, text: String, theme: Theme) -> void:
+func _add_section_label(parent: VBoxContainer, text: String, theme: Theme, lbl_settings: LabelSettings) -> void:
 	var sep = HSeparator.new()
 	sep.layout_mode = 2
 	sep.add_theme_constant_override("separation", 16)
@@ -207,13 +207,12 @@ func _add_section_label(parent: VBoxContainer, text: String, theme: Theme) -> vo
 
 	var label = Label.new()
 	label.text = text
-	label.theme = theme
-	label.add_theme_font_size_override("font_size", 48)
+	label.label_settings = lbl_settings
 	label.add_theme_color_override("font_color", Color(0.55, 0.75, 1.0))
 	label.layout_mode = 2
 	parent.add_child(label)
 
-func _add_toggle(parent: VBoxContainer, label_text: String, setting_key: String, theme: Theme) -> CheckBox:
+func _add_toggle(parent: VBoxContainer, label_text: String, setting_key: String, theme: Theme, lbl_settings: LabelSettings) -> CheckBox:
 	var row = HBoxContainer.new()
 	row.layout_mode = 2
 	row.add_theme_constant_override("separation", 16)
@@ -221,14 +220,16 @@ func _add_toggle(parent: VBoxContainer, label_text: String, setting_key: String,
 
 	var label = Label.new()
 	label.text = label_text
-	label.theme = theme
-	label.add_theme_font_size_override("font_size", 40)
+	label.label_settings = lbl_settings
+	label.custom_minimum_size = Vector2(512, 64)
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	row.add_child(label)
 
 	var checkbox = CheckBox.new()
 	checkbox.theme = theme
-	checkbox.custom_minimum_size = Vector2(64, 64)
+	checkbox.custom_minimum_size = Vector2(450, 64)
+	checkbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	checkbox.button_pressed = _config.get_setting(setting_key)
 	checkbox.toggled.connect(func(enabled): _config.set_setting(setting_key, enabled))
 	checkbox.focus_entered.connect(func(): _select_graphic.target_y = checkbox.global_position.y)
