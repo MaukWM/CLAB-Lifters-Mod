@@ -6,6 +6,9 @@ var _select_graphic: Node
 var _power_interval_label: Label
 var _power_interval_slider: HSlider
 var _power_row: HBoxContainer
+var _score_interval_label: Label
+var _score_interval_slider: HSlider
+var _score_row: HBoxContainer
 
 func setup(config: Node) -> void:
 	_config = config
@@ -150,10 +153,44 @@ func _ready() -> void:
 	_power_interval_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_power_row.add_child(_power_interval_label)
 
+	var emit_score = _add_toggle(options, "Split on Score", "autosplit.emit_on_score", ui_theme, label_settings)
+
+	# Score interval slider row
+	_score_row = HBoxContainer.new()
+	_score_row.add_theme_constant_override("separation", 16)
+	_score_row.layout_mode = 2
+	options.add_child(_score_row)
+
+	var score_interval_label = Label.new()
+	score_interval_label.text = "  Score Interval"
+	score_interval_label.label_settings = label_settings
+	score_interval_label.custom_minimum_size = Vector2(350, 64)
+	score_interval_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_score_row.add_child(score_interval_label)
+
+	_score_interval_slider = HSlider.new()
+	_score_interval_slider.min_value = 5
+	_score_interval_slider.max_value = 400
+	_score_interval_slider.step = 5
+	_score_interval_slider.value = _config.get_setting("autosplit.score_interval")
+	_score_interval_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_score_interval_slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_score_interval_slider.custom_minimum_size = Vector2(200, 64)
+	_score_row.add_child(_score_interval_slider)
+
+	_score_interval_label = Label.new()
+	_score_interval_label.text = "%d" % _score_interval_slider.value
+	_score_interval_label.label_settings = label_settings
+	_score_interval_label.custom_minimum_size = Vector2(128, 0)
+	_score_interval_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_score_interval_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_score_row.add_child(_score_interval_label)
+
 	var emit_boulder = _add_toggle(options, "Split on Boulder Lift", "autosplit.emit_on_boulder_lift", ui_theme, label_settings)
 
-	# Update power row visibility
+	# Update row visibility
 	_update_power_row_state()
+	_update_score_row_state()
 
 	# --- Back button ---
 	var back_btn = Button.new()
@@ -179,12 +216,16 @@ func _ready() -> void:
 	back_btn.focus_entered.connect(func(): _select_graphic.target_y = back_btn.global_position.y)
 	back_btn.mouse_entered.connect(func(): back_btn.grab_focus())
 
-	# Connect slider
+	# Connect sliders
 	_power_interval_slider.value_changed.connect(_on_power_interval_changed)
 	_power_interval_slider.focus_entered.connect(func(): _select_graphic.target_y = _power_interval_slider.global_position.y)
 	_power_interval_slider.mouse_entered.connect(func(): _power_interval_slider.grab_focus())
 
-	# React to autosplit toggle to dim/enable power rows
+	_score_interval_slider.value_changed.connect(_on_score_interval_changed)
+	_score_interval_slider.focus_entered.connect(func(): _select_graphic.target_y = _score_interval_slider.global_position.y)
+	_score_interval_slider.mouse_entered.connect(func(): _score_interval_slider.grab_focus())
+
+	# React to autosplit toggles to dim/enable interval rows
 	_config.setting_changed.connect(_on_setting_changed)
 
 	# Grab initial focus
@@ -235,14 +276,25 @@ func _on_power_interval_changed(value: float) -> void:
 	_config.set_setting("autosplit.power_interval", value)
 	_power_interval_label.text = "%.2f" % value
 
+func _on_score_interval_changed(value: float) -> void:
+	_config.set_setting("autosplit.score_interval", int(value))
+	_score_interval_label.text = "%d" % value
+
 func _on_setting_changed(key: String, _value: Variant) -> void:
 	if key == "autosplit.emit_on_power":
 		_update_power_row_state()
+	elif key == "autosplit.emit_on_score":
+		_update_score_row_state()
 
 func _update_power_row_state() -> void:
 	var enabled = _config.get_setting("autosplit.emit_on_power")
 	_power_row.modulate.a = 1.0 if enabled else 0.4
 	_power_interval_slider.editable = enabled
+
+func _update_score_row_state() -> void:
+	var enabled = _config.get_setting("autosplit.emit_on_score")
+	_score_row.modulate.a = 1.0 if enabled else 0.4
+	_score_interval_slider.editable = enabled
 
 func _on_back_pressed() -> void:
 	if !transition_tween:

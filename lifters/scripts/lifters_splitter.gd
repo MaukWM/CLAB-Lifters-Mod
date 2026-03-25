@@ -5,6 +5,7 @@ var _config: Node
 var _livesplit: Node
 
 var _prev_power: float = 0.0
+var _prev_score: int = 0
 var _prev_frog_count: int = 0
 var _prev_finish_queued: bool = false
 var _prev_game_state = null
@@ -42,6 +43,7 @@ func _physics_process(_delta: float) -> void:
 		_active = true
 		_started = false
 		_prev_power = Globals.MAIN_NODE.game_power
+		_prev_score = SaveFileManager.LEVEL_SAVE_CONTENT["counter_score_items_collected"]
 		_prev_frog_count = SaveFileManager.LEVEL_SAVE_CONTENT["frogs_collected"].size()
 		_prev_finish_queued = false
 		print("Lifters Splitter: Entered game, waiting for lockout to end.")
@@ -55,6 +57,7 @@ func _physics_process(_delta: float) -> void:
 
 	# Read current state
 	var current_power: float = Globals.MAIN_NODE.game_power
+	var current_score: int = SaveFileManager.LEVEL_SAVE_CONTENT["counter_score_items_collected"]
 	var current_frog_count: int = SaveFileManager.LEVEL_SAVE_CONTENT["frogs_collected"].size()
 	var current_finish_queued: bool = Globals.MAIN_NODE.finish_game_queued
 	var current_time: float = SaveFileManager.LEVEL_SAVE_CONTENT["time_spent_seconds"]
@@ -81,6 +84,16 @@ func _physics_process(_delta: float) -> void:
 				_livesplit.start_or_split()
 				print("Lifters Splitter: Power split at ", current_power)
 
+	# Score interval splits
+	if _config.get_setting("autosplit.emit_on_score"):
+		var interval = _config.get_setting("autosplit.score_interval")
+		if interval > 0:
+			var prev_step = _prev_score / interval
+			var curr_step = current_score / interval
+			if curr_step > prev_step:
+				_livesplit.start_or_split()
+				print("Lifters Splitter: Score split at ", current_score)
+
 	# Frog splits
 	if _config.get_setting("autosplit.emit_on_frog"):
 		if current_frog_count > _prev_frog_count:
@@ -95,5 +108,6 @@ func _physics_process(_delta: float) -> void:
 
 	# Update previous state
 	_prev_power = current_power
+	_prev_score = current_score
 	_prev_frog_count = current_frog_count
 	_prev_finish_queued = current_finish_queued

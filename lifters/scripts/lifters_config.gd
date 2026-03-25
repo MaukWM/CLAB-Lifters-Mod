@@ -22,6 +22,8 @@ var DEFAULTS: Dictionary = {
 		"emit_on_frog": false,
 		"emit_on_power": true,
 		"power_interval": 0.50,
+		"emit_on_score": false,
+		"score_interval": 100,
 		"emit_on_boulder_lift": true,
 	},
 }
