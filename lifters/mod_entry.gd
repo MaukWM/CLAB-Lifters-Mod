@@ -21,9 +21,14 @@ func _ready() -> void:
 	options_injector.set_script(load(MOD_DIR + "ui/options_injector.gd"))
 	add_child(options_injector)
 
+	# Story skip watcher
+	var story_watcher = Node.new()
+	story_watcher.name = "StorySkipWatcher"
+	story_watcher.set_script(load(MOD_DIR + "scripts/story_skip_watcher.gd"))
+	add_child(story_watcher)
+	story_watcher.setup(config)
+
 	# TODO: LiveSplit TCP client (livesplit_client.gd)
 	# TODO: Split detector (lifters_splitter.gd)
-	# TODO: Intro skip watcher (intro_skip_watcher.gd)
-	# TODO: Lifters settings menu (lifters_menu.gd)
 
 	print("Lifters: All systems ready.")
