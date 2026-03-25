@@ -14,6 +14,7 @@ var DEFAULTS: Dictionary = {
 	"version": CURRENT_VERSION,
 	"skip_intro_story": true,
 	"skip_endgame_story": false,
+	"disable_save": false,
 	"autosplit": {
 		"enabled": true,
 		"livesplit_host": "127.0.0.1",

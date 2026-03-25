@@ -28,6 +28,13 @@ func _ready() -> void:
 	add_child(story_watcher)
 	story_watcher.setup(config)
 
+	# Save guard (disable saving for speedruns)
+	var save_guard = Node.new()
+	save_guard.name = "SaveGuard"
+	save_guard.set_script(load(MOD_DIR + "scripts/save_guard.gd"))
+	add_child(save_guard)
+	save_guard.setup(config)
+
 	# TODO: LiveSplit TCP client (livesplit_client.gd)
 	# TODO: Split detector (lifters_splitter.gd)
 

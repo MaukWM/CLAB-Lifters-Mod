@@ -106,6 +106,10 @@ func _ready() -> void:
 	options.add_theme_constant_override("separation", 24)
 	scroll.add_child(options)
 
+	# --- General section ---
+	_add_section_label(options, "GENERAL", ui_theme, label_settings)
+	var disable_save = _add_toggle(options, "Disable Saving", "disable_save", ui_theme, label_settings)
+
 	# --- Story section ---
 	_add_section_label(options, "STORY", ui_theme, label_settings)
 	var skip_intro = _add_toggle(options, "Skip Intro", "skip_intro_story", ui_theme, label_settings)
