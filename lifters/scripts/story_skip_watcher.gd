@@ -32,9 +32,9 @@ func _process(_delta: float) -> void:
 			return
 
 		if is_end and _config.get_setting("skip_endgame_story"):
-			print("Lifters: Skipping ending story...")
+			print("Lifters: Skipping ending story, jumping to results screen...")
 			_did_skip = true
-			child.queue_free()
-			Globals.MAIN_NODE.use_cinema = true
-			Globals.MAIN_NODE.switch_to_main_menu(false, true)
+			child.showing_end_game_image = true
+			child.get_node("%StoryPanels").modulate.a = 0.0
+			Globals.MUSIC_PLAYER.play_music(MusicPlayer.MUSIC.STORY_END, false)
 			return
