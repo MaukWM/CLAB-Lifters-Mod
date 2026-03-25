@@ -1,0 +1,19 @@
+{
+  "id": "MaukWM-Lifters",
+  "name": "Lifters",
+  "version": "0.1.0",
+  "description": "Mod introducing QoL stuff for speedrunners for Cirno! Lifts a Boulder.",
+  "authors": ["MaukWM"],
+  "compatible_game_version": ["1.0"],
+  "compatible_mod_loader_version": ["6.0.0"],
+  "incompatibilities": [],
+  "dependencies": [],
+  "load_before": [],
+  "tags": ["speedrun", "autosplitter", "livesplit", "utility"],
+  "config_defaults": {},
+  "extra": {
+    "godot_version": "4.6",
+    "homepage": "https://github.com/MaukWM/CLAB-Lifters-Mod",
+    "license": "MIT"
+  }
+}

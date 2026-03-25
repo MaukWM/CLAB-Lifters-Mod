@@ -1,0 +1,26 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Package mod zip
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          cd mods-unpacked
+          zip -r ../MaukWM-Lifters-$VERSION.zip MaukWM-Lifters/
+
+      - name: Upload release artifact
+        uses: softprops/action-gh-release@v2
+        with:
+          files: MaukWM-Lifters-*.zip
