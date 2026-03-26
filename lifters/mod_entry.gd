@@ -21,6 +21,12 @@ func _ready() -> void:
 	options_injector.set_script(load(MOD_DIR + "ui/options_injector.gd"))
 	add_child(options_injector)
 
+	# UI: Timer display patch (centisecond precision)
+	var timer_patch = Node.new()
+	timer_patch.name = "TimerDisplayPatch"
+	timer_patch.set_script(load(MOD_DIR + "ui/timer_display_patch.gd"))
+	add_child(timer_patch)
+
 	# Story skip watcher
 	var story_watcher = Node.new()
 	story_watcher.name = "StorySkipWatcher"
