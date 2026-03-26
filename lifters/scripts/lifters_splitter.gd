@@ -12,6 +12,7 @@ var _prev_game_state = null
 var _active: bool = false
 var _started: bool = false
 var _paused: bool = false
+var _finished: bool = false
 
 func setup(livesplit: Node, config: Node) -> void:
 	_livesplit = livesplit
@@ -24,8 +25,8 @@ func _physics_process(_delta: float) -> void:
 
 	var game_state = Globals.CURRENT_GAME_STATE
 
-	# Keep sending game time every tick so LiveSplit stays in sync
-	if _started and _active:
+	# Keep sending game time every tick so LiveSplit stays in sync (stop after boulder lift)
+	if _started and _active and not _finished:
 		var current_time: float = SaveFileManager.LEVEL_SAVE_CONTENT["time_spent_seconds"]
 		_livesplit.set_game_time(current_time)
 
@@ -42,6 +43,7 @@ func _physics_process(_delta: float) -> void:
 		_active = false
 		_started = false
 		_paused = false
+		_finished = false
 
 	# Only process splits/detection when in game
 	if game_state != Globals.GAME_STATE.IN_GAME:
@@ -52,6 +54,7 @@ func _physics_process(_delta: float) -> void:
 	if _prev_game_state == Globals.GAME_STATE.MAIN_MENU:
 		_active = true
 		_started = false
+		_finished = false
 		_prev_power = Globals.MAIN_NODE.game_power
 		_prev_score = SaveFileManager.LEVEL_SAVE_CONTENT["counter_score_items_collected"]
 		_prev_frog_count = SaveFileManager.LEVEL_SAVE_CONTENT["frogs_collected"].size()
@@ -107,11 +110,14 @@ func _physics_process(_delta: float) -> void:
 			_livesplit.start_or_split()
 			print("Lifters Splitter: Frog split (", current_frog_count, " total).")
 
-	# Boulder lift split
+	# Boulder lift split — freeze timer after this
 	if _config.get_setting("autosplit.emit_on_boulder_lift"):
 		if current_finish_queued and not _prev_finish_queued:
+			_livesplit.set_game_time(current_time)
+			_livesplit.pause_game_time()
 			_livesplit.start_or_split()
-			print("Lifters Splitter: Boulder lift split!")
+			_finished = true
+			print("Lifters Splitter: Boulder lift split! Timer frozen.")
 
 	# Update previous state
 	_prev_power = current_power

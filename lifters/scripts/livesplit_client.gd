@@ -70,9 +70,12 @@ func reset() -> void:
 	send_command("reset")
 
 func set_game_time(seconds: float) -> void:
-	var s: int = int(seconds)
-	var frac: int = int((seconds - s) * 10000000.0)
-	send_command("setgametime %d:%02d:%02d.%07d" % [s / 3600, (s % 3600) / 60, s % 60, frac])
+	var total_ms := int(seconds * 1000.0)
+	var ms := total_ms % 1000
+	var s := (total_ms / 1000) % 60
+	var m := (total_ms / 60000) % 60
+	var h := total_ms / 3600000
+	send_command("setgametime %d:%02d:%02d.%03d" % [h, m, s, ms])
 
 func pause_game_time() -> void:
 	send_command("pausegametime")
