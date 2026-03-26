@@ -28,6 +28,19 @@ func _ready() -> void:
 	add_child(timer_patch)
 	timer_patch.setup(config)
 
+	# Practice mode state
+	var practice_mode = Node.new()
+	practice_mode.name = "PracticeMode"
+	practice_mode.set_script(load(MOD_DIR + "scripts/practice_mode.gd"))
+	add_child(practice_mode)
+
+	# UI: Title menu practice button
+	var title_injector = Node.new()
+	title_injector.name = "TitleMenuInjector"
+	title_injector.set_script(load(MOD_DIR + "ui/title_menu_injector.gd"))
+	add_child(title_injector)
+	title_injector.setup(practice_mode)
+
 	# Story skip watcher
 	var story_watcher = Node.new()
 	story_watcher.name = "StorySkipWatcher"
