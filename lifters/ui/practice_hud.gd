@@ -1,10 +1,12 @@
-# Shows "PRACTICE MODE" label, speedometer, and keybind reference when practice mode is active.
+# Shows "PRACTICE MODE" label, speedometer, keybind reference, and feedback when practice mode is active.
 extends Node
 
 var _practice_mode: Node
 var _label: Label
 var _speed_label: Label
 var _keybinds_label: Label
+var _feedback_label: Label
+var _feedback_tween: Tween
 
 func setup(practice_mode: Node) -> void:
 	_practice_mode = practice_mode
@@ -18,6 +20,8 @@ func _process(_delta: float) -> void:
 			_speed_label.hide()
 		if is_instance_valid(_keybinds_label):
 			_keybinds_label.hide()
+		if is_instance_valid(_feedback_label):
+			_feedback_label.hide()
 		return
 
 	if Globals.GAME_HUD_NODE == null:
@@ -29,12 +33,21 @@ func _process(_delta: float) -> void:
 	var vis = Globals.GAME_HUD_NODE.visible
 	_label.visible = vis
 	_speed_label.visible = vis
-
-	# Keybinds only show when paused
 	_keybinds_label.visible = get_tree().paused
 
 	if vis:
 		_update_speed()
+
+func show_feedback(text: String) -> void:
+	if not is_instance_valid(_feedback_label):
+		return
+	_feedback_label.text = text
+	_feedback_label.modulate.a = 1.0
+	_feedback_label.show()
+	if _feedback_tween:
+		_feedback_tween.kill()
+	_feedback_tween = get_tree().create_tween()
+	_feedback_tween.tween_property(_feedback_label, "modulate:a", 0.0, 1.0).set_delay(0.5)
 
 func _update_speed() -> void:
 	var player = Globals.LEVEL_NODE.get_node_or_null("Player")
@@ -76,7 +89,7 @@ func _create_labels() -> void:
 
 	_keybinds_label = Label.new()
 	_keybinds_label.name = "KeybindsLabel"
-	_keybinds_label.text = "F5/F6  Power ±0.20\nShift+F5/F6  ±0.01\nF8  Reset Items"
+	_keybinds_label.text = "F1  Save State\nF2  Load State\nF5/F6  Power ±0.20\nShift+F5/F6  ±0.01\nF8  Reset Items"
 	_keybinds_label.label_settings = label_settings
 	_keybinds_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_keybinds_label.anchor_left = 0.0
@@ -85,9 +98,23 @@ func _create_labels() -> void:
 	_keybinds_label.anchor_bottom = 1.0
 	_keybinds_label.offset_left = 140.0
 	_keybinds_label.offset_right = 640.0
-	_keybinds_label.offset_top = -200.0
-	_keybinds_label.offset_bottom = -90.0
+	_keybinds_label.offset_top = -250.0
+	_keybinds_label.offset_bottom = -110.0
 	_keybinds_label.scale = Vector2(0.5, 0.5)
 	Globals.GAME_HUD_NODE.add_child(_keybinds_label)
+
+	_feedback_label = Label.new()
+	_feedback_label.name = "FeedbackLabel"
+	_feedback_label.label_settings = label_settings
+	_feedback_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_feedback_label.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_feedback_label.offset_top = 80.0
+	_feedback_label.offset_left = -300.0
+	_feedback_label.offset_right = 300.0
+	var feedback_settings = label_settings.duplicate()
+	feedback_settings.font_size = 40
+	_feedback_label.label_settings = feedback_settings
+	_feedback_label.modulate.a = 0.0
+	Globals.GAME_HUD_NODE.add_child(_feedback_label)
 
 	print("Lifters: Practice mode HUD labels added.")

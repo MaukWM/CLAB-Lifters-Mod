@@ -40,6 +40,7 @@ func _ready() -> void:
 	practice_hud.set_script(load(MOD_DIR + "ui/practice_hud.gd"))
 	add_child(practice_hud)
 	practice_hud.setup(practice_mode)
+	practice_mode.setup(practice_hud)
 
 	# UI: Title menu practice button
 	var title_injector = Node.new()
