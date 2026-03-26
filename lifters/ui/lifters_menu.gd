@@ -109,6 +109,7 @@ func _ready() -> void:
 
 	# --- General section ---
 	_add_section_label(options, "GENERAL", ui_theme, label_settings)
+	var precise_timer = _add_toggle(options, "Precise Timer", "precise_timer", ui_theme, label_settings)
 	var disable_save = _add_toggle(options, "Disable Saving", "disable_save", ui_theme, label_settings)
 
 	# --- Story section ---

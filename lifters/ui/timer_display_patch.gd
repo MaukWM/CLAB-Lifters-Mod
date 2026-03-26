@@ -1,14 +1,20 @@
 # Patches the game's ClockTimeLabel to show centiseconds (HH:MM:SS.cc).
 # Applies to both the pause screen stat widget and the end screen stat widget.
+# Controlled by the "precise_timer" setting.
 extends Node
 
+var _config: Node
 var _pause_patched: bool = false
 var _endscreen_patched: bool = false
 
-func _ready() -> void:
+func setup(config: Node) -> void:
+	_config = config
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
 func _process(_delta: float) -> void:
+	if not _config or not _config.get_setting("precise_timer"):
+		return
+
 	# Patch pause screen timer
 	if Globals.MENU_NODE:
 		var options_menu = _find_options_menu()

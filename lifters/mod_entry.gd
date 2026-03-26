@@ -26,6 +26,7 @@ func _ready() -> void:
 	timer_patch.name = "TimerDisplayPatch"
 	timer_patch.set_script(load(MOD_DIR + "ui/timer_display_patch.gd"))
 	add_child(timer_patch)
+	timer_patch.setup(config)
 
 	# Story skip watcher
 	var story_watcher = Node.new()

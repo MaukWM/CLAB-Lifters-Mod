@@ -6,7 +6,7 @@ signal setting_changed(key: String, value: Variant)
 
 const SETTINGS_DIR = "user://lifters/"
 const SETTINGS_PATH = "user://lifters/settings.json"
-const CURRENT_VERSION = 1
+const CURRENT_VERSION = 2
 
 var _data: Dictionary = {}
 
@@ -14,6 +14,7 @@ var DEFAULTS: Dictionary = {
 	"version": CURRENT_VERSION,
 	"skip_intro_story": true,
 	"skip_endgame_story": false,
+	"precise_timer": true,
 	"disable_save": false,
 	"autosplit": {
 		"enabled": true,
