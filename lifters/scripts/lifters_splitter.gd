@@ -22,18 +22,28 @@ func _physics_process(_delta: float) -> void:
 	if not _config.get_setting("autosplit.enabled"):
 		return
 
-	# Pause/unpause game time when game pauses
 	var game_state = Globals.CURRENT_GAME_STATE
+
+	# Keep sending game time every tick so LiveSplit stays in sync
+	if _started and _active:
+		var current_time: float = SaveFileManager.LEVEL_SAVE_CONTENT["time_spent_seconds"]
+		_livesplit.set_game_time(current_time)
+
+	# Pause/unpause LiveSplit's internal clock to prevent flicker
 	if game_state == Globals.GAME_STATE.PAUSE_MENU and not _paused and _active:
 		_livesplit.pause_game_time()
 		_paused = true
-		print("Lifters Splitter: Game paused, timer paused.")
 	elif game_state == Globals.GAME_STATE.IN_GAME and _paused:
 		_livesplit.unpause_game_time()
 		_paused = false
-		print("Lifters Splitter: Game unpaused, timer resumed.")
 
-	# Only track when in game
+	# Deactivate when returning to main menu
+	if game_state == Globals.GAME_STATE.MAIN_MENU and _active:
+		_active = false
+		_started = false
+		_paused = false
+
+	# Only process splits/detection when in game
 	if game_state != Globals.GAME_STATE.IN_GAME:
 		_prev_game_state = game_state
 		return
@@ -70,9 +80,6 @@ func _physics_process(_delta: float) -> void:
 
 	if not _started:
 		return
-
-	# Send game time every tick
-	_livesplit.set_game_time(current_time)
 
 	# Power interval splits
 	if _config.get_setting("autosplit.emit_on_power"):
