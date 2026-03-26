@@ -1,9 +1,10 @@
-# Shows "PRACTICE MODE" label and speedometer when practice mode is active.
+# Shows "PRACTICE MODE" label, speedometer, and keybind reference when practice mode is active.
 extends Node
 
 var _practice_mode: Node
 var _label: Label
 var _speed_label: Label
+var _keybinds_label: Label
 
 func setup(practice_mode: Node) -> void:
 	_practice_mode = practice_mode
@@ -15,6 +16,8 @@ func _process(_delta: float) -> void:
 			_label.hide()
 		if is_instance_valid(_speed_label):
 			_speed_label.hide()
+		if is_instance_valid(_keybinds_label):
+			_keybinds_label.hide()
 		return
 
 	if Globals.GAME_HUD_NODE == null:
@@ -23,10 +26,14 @@ func _process(_delta: float) -> void:
 	if not is_instance_valid(_label):
 		_create_labels()
 
-	_label.visible = Globals.GAME_HUD_NODE.visible
-	_speed_label.visible = Globals.GAME_HUD_NODE.visible
+	var vis = Globals.GAME_HUD_NODE.visible
+	_label.visible = vis
+	_speed_label.visible = vis
 
-	if _speed_label.visible:
+	# Keybinds only show when paused
+	_keybinds_label.visible = get_tree().paused
+
+	if vis:
 		_update_speed()
 
 func _update_speed() -> void:
@@ -66,5 +73,21 @@ func _create_labels() -> void:
 	_speed_label.offset_bottom = -8.0
 	_speed_label.scale = Vector2(0.7, 0.7)
 	Globals.GAME_HUD_NODE.add_child(_speed_label)
+
+	_keybinds_label = Label.new()
+	_keybinds_label.name = "KeybindsLabel"
+	_keybinds_label.text = "F5/F6  Power ±0.20\nShift+F5/F6  ±0.01\nF8  Reset Items"
+	_keybinds_label.label_settings = label_settings
+	_keybinds_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_keybinds_label.anchor_left = 0.0
+	_keybinds_label.anchor_right = 0.0
+	_keybinds_label.anchor_top = 1.0
+	_keybinds_label.anchor_bottom = 1.0
+	_keybinds_label.offset_left = 140.0
+	_keybinds_label.offset_right = 640.0
+	_keybinds_label.offset_top = -200.0
+	_keybinds_label.offset_bottom = -90.0
+	_keybinds_label.scale = Vector2(0.5, 0.5)
+	Globals.GAME_HUD_NODE.add_child(_keybinds_label)
 
 	print("Lifters: Practice mode HUD labels added.")
