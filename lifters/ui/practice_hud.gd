@@ -89,7 +89,7 @@ func _create_labels() -> void:
 
 	_keybinds_label = Label.new()
 	_keybinds_label.name = "KeybindsLabel"
-	_keybinds_label.text = "F1  Save State\nF2  Load State\nF5/F6  Power ±0.20\nShift+F5/F6  ±0.01\nF8  Reset Items"
+	_keybinds_label.text = "F1-F4  Save Slot 1-4\n1-4  Load Slot 1-4\nF5/F6  Power +/-0.20\nShift+F5/F6  +/-0.01\nF8  Reset Items"
 	_keybinds_label.label_settings = label_settings
 	_keybinds_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_keybinds_label.anchor_left = 0.0
